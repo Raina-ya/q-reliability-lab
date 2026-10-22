@@ -23,3 +23,17 @@ The hypothesis would be false if the selected computational-basis success metric
 
 This prediction is written before running the parameter sweep so that the numerical output tests a stated claim rather than supplying a post-hoc narrative.
 
+## Result recorded after the sweep
+
+The 101-point deterministic sweep agreed with the hypothesis and the analytic expressions:
+
+- `P(00) + P(11) = 1` for every value of `p`.
+- Fidelity followed `1 - p`.
+- `Re(rho[00,11])` followed `(1 - 2p) / 2`.
+- `|rho[00,11]|` followed `|1 - 2p| / 2`.
+
+At `p = 0.5`, the output was the incoherent mixture of `|00>` and `|11>`. At `p = 1`, the output was the coherent but orthogonal Bell state `|Phi->`. These two cases produced the same computational-basis success probability as the target state but failed for different physical reasons.
+
+## Interpretation boundary
+
+The result applies to the stated analytic channel and metric. It is not hardware data and does not estimate a physical CNOT error rate. The model does not include SPAM error, crosstalk, coherent calibration error, finite-shot uncertainty, or drift, and it does not place the error at a specific time inside a CNOT implementation.

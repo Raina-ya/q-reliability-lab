@@ -197,7 +197,7 @@ def _write_figures_with_pillow(rows: list[dict[str, float]], directory: Path) ->
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=Path("experiments/phase_error_sweep.csv"))
-    parser.add_argument("--figures", type=Path, default=Path("figures"))
+    parser.add_argument("--figures", type=Path, default=Path("paper/figures"))
     args = parser.parse_args()
 
     rows = sweep()
