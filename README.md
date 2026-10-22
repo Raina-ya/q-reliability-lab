@@ -27,7 +27,11 @@ S(p)=P(00)+P(11)=1,
 \qquad
 F(p)=1-p,
 \qquad
+<<<<<<< HEAD
 {Re}(\rho_{00,11})=\frac{1-2p}{2}.
+=======
+\mathrm{Re}(\rho_{00,11})=\frac{1-2p}{2}.
+>>>>>>> 3342cb3 (Fix GitHub math rendering in README)
 $$
 
 ![Computational-basis success remains one while fidelity decreases.](paper/figures/success_vs_fidelity.png)
