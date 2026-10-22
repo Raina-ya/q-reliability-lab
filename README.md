@@ -22,7 +22,13 @@ $$
 
 the simulated metrics agree with
 
-
+$$
+S(p)=P(00)+P(11)=1,
+\qquad
+F(p)=1-p,
+\qquad
+{Re}(\rho_{00,11})=\frac{1-2p}{2}.
+$$
 
 ![Computational-basis success remains one while fidelity decreases.](paper/figures/success_vs_fidelity.png)
 
