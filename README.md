@@ -30,7 +30,7 @@ F(p)=1-p,
 <<<<<<< HEAD
 {Re}(\rho_{00,11})=\frac{1-2p}{2}.
 =======
-\mathrm{Re}(\rho_{00,11})=\frac{1-2p}{2}.
+{Re}(\rho_{00,11})=\frac{1-2p}{2}.
 >>>>>>> 3342cb3 (Fix GitHub math rendering in README)
 $$
 
