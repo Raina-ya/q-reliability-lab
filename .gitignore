@@ -1,6 +1,7 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.pytest-tmp/
 .venv/
 dist/
 build/
@@ -12,4 +13,3 @@ paper/*.fdb_latexmk
 paper/*.fls
 paper/*.log
 paper/*.out
-

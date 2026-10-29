@@ -117,3 +117,17 @@ The code constructs `Pi_X` by outer products of the `|++>` and `|-->`
 vectors, then evaluates `Tr(Pi_X rho)`.  Endpoint and dense-grid tests compare
 that matrix computation to `1-p`; they also establish the contrast
 `S_Z(p)=1` and `S_X(p)=1-p`.
+
+## Task 4: Reproducible sweep schema
+
+The deterministic sweep now exports six columns in this order:
+`p`, `success_probability`, `x_basis_success_probability`, `fidelity`,
+`coherence_real`, and `coherence_magnitude`. A generated-data test verifies
+the exact schema, 101 rows, the `p=0` and `p=1` endpoints, and the
+representative `p=0.5` row. It also writes two independently rebuilt CSV
+files and compares their bytes, establishing deterministic reproduction.
+
+The CSV, README, report, code identifiers, and tests use
+`x_basis_success_probability` in code/data and $S_X(p)=P(++)+P(--)=1-p$ in
+mathematical prose. The existing `success_probability` remains the
+computational-basis quantity $S_Z(p)=P(00)+P(11)$.

@@ -111,6 +111,7 @@ def write_figures(rows: list[dict[str, float]], directory: Path) -> None:
 
     plt.figure(figsize=(7.2, 4.4))
     plt.plot(p, [row["success_probability"] for row in rows], label=r"$P(00)+P(11)$", linewidth=2.4)
+    plt.plot(p, [row["x_basis_success_probability"] for row in rows], label=r"$P(++)+P(--)$", linewidth=2.4)
     plt.plot(p, [row["fidelity"] for row in rows], label=r"$F(\rho,|\Phi^+\rangle)$", linewidth=2.4)
     plt.xlabel("Phase-flip probability p")
     plt.ylabel("Metric value")
@@ -141,7 +142,7 @@ def _write_figures_with_pillow(rows: list[dict[str, float]], directory: Path) ->
 
     width, height = 1296, 792
     margin = {"left": 110, "right": 45, "top": 55, "bottom": 95}
-    colors = [(31, 119, 180), (214, 39, 40)]
+    colors = [(31, 119, 180), (44, 160, 44), (214, 39, 40)]
     font = ImageFont.load_default(size=22)
     small = ImageFont.load_default(size=18)
 
@@ -187,6 +188,7 @@ def _write_figures_with_pillow(rows: list[dict[str, float]], directory: Path) ->
         "Metric value",
         [
             ("P(00) + P(11)", [row["success_probability"] for row in rows]),
+            ("P(++) + P(--)", [row["x_basis_success_probability"] for row in rows]),
             ("Fidelity to Phi+", [row["fidelity"] for row in rows]),
         ],
         0.0,

@@ -31,8 +31,8 @@ In this study, we investigated whether computational-basis success probability
 alone can correctly evaluate a phase-corrupted Bell-state circuit.  The ideal
 state $\ket{\Phi^+}=(\ket{00}+\ket{11})/\sqrt{2}$ was subjected to a phase-flip
 channel on the first qubit, and the error probability was swept from $p=0$ to
-$p=1$ in steps of $0.01$.  The computational-basis success probability,
-fidelity to $\ket{\Phi^+}$, and the signed and absolute values of the coherence
+$p=1$ in steps of $0.01$.  The computational-basis and X-basis correlated
+success probabilities, fidelity to $\ket{\Phi^+}$, and the signed and absolute values of the coherence
 element $\rho_{00,11}$ were compared.  The success probability remained equal
 to one for all 101 simulated values, while the fidelity decreased from one to
 zero and $\operatorname{Re}(\rho_{00,11})$ changed from $0.5$ to $-0.5$.  At
@@ -156,14 +156,25 @@ success probability reads only the diagonal populations:
 \begin{equation}
 S(p)=P(00)+P(11)=\rho_{00,00}(p)+\rho_{11,11}(p)=1. \label{eq:success}
 \end{equation}
-Second, because the reference state is pure, its fidelity is
+Second, phase-sensitive X-basis correlation is measured with
+\begin{equation}
+\Pi_X=\ket{++}\!\bra{++}+\ket{--}\!\bra{--},
+\end{equation}
+where $\ket{\pm}=(\ket{0}\pm\ket{1})/\sqrt{2}$. In the computational basis,
+the resulting success probability is
+\begin{align}
+S_X(p)&=\operatorname{Tr}(\Pi_X\rho(p)) \\
+&=\frac12\left(\rho_{00,00}+\rho_{11,11}+\rho_{00,11}+\rho_{11,00}\right) \\
+&=1-p. \label{eq:x-success}
+\end{align}
+The code evaluates this trace from the projector. Third, because the reference state is pure, its fidelity is
 \begin{align}
 F(p)&=\bra{\Phi^+}\rho(p)\ket{\Phi^+} \\
 &=(1-p)|\braket{\Phi^+|\Phi^+}|^2
 +p|\braket{\Phi^+|\Phi^-}|^2 \\
 &=1-p. \label{eq:fidelity}
 \end{align}
-Third, the coherence was evaluated using both its signed real part and its
+Fourth, the coherence was evaluated using both its signed real part and its
 magnitude:
 \begin{equation}
 \operatorname{Re}(\rho_{00,11})=\frac{1-2p}{2}, \qquad
@@ -179,16 +190,16 @@ probability was swept over
 p\in\{0,0.01,0.02,\ldots,0.99,1\},
 \end{equation}
 giving 101 deterministic density-matrix evaluations.  For each value of $p$,
-the program applied the Kraus map and recorded $S(p)$, $F(p)$,
+the program applied the Kraus map and recorded $S(p)$, $S_X(p)$, $F(p)$,
 $\operatorname{Re}(\rho_{00,11})$, and $|\rho_{00,11}|$.  Matplotlib was used
 to generate the figures, and the complete numerical sweep was stored in CSV
 format.  No random sampling, finite-shot measurement, or quantum software
 development kit was used.
 
-The implementation was checked using nine pytest tests.  These tests verify
-the Kraus completeness relation, unit trace, Hermiticity, positive
-semidefiniteness, the analytic end points, removal of coherence at $p=0.5$,
-and the predicted behavior of the success probability and fidelity.
+The implementation was checked with parameterized pytest tests. These tests
+verify the analytic density matrix and metric relations, Kraus completeness,
+unit trace, Hermiticity, positive semidefiniteness, invalid input rejection,
+X-basis projector evaluation, and deterministic CSV regeneration.
 
 \section*{Results}
 Representative numerical values from the 101-point sweep are shown in
@@ -201,30 +212,30 @@ Eqs.~\eqref{eq:success}--\eqref{eq:coherence} to the stored precision.
 signed coherence show that the target Bell state has changed.}
 \label{tab:results}
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}ccccc@{}}
+\begin{tabular}{@{}cccccc@{}}
 \toprule
-$p$ & $S(p)$ & $F(p)$ & $\operatorname{Re}(\rho_{00,11})$ & $|\rho_{00,11}|$\\
+$p$ & $S(p)$ & $S_X(p)$ & $F(p)$ & $\operatorname{Re}(\rho_{00,11})$ & $|\rho_{00,11}|$\\
 \midrule
-0.00 & 1.00 & 1.00 &  0.50 & 0.50\\
-0.25 & 1.00 & 0.75 &  0.25 & 0.25\\
-0.50 & 1.00 & 0.50 &  0.00 & 0.00\\
-0.75 & 1.00 & 0.25 & -0.25 & 0.25\\
-1.00 & 1.00 & 0.00 & -0.50 & 0.50\\
+0.00 & 1.00 & 1.00 & 1.00 &  0.50 & 0.50\\
+0.25 & 1.00 & 0.75 & 0.75 &  0.25 & 0.25\\
+0.50 & 1.00 & 0.50 & 0.50 &  0.00 & 0.00\\
+0.75 & 1.00 & 0.25 & 0.25 & -0.25 & 0.25\\
+1.00 & 1.00 & 0.00 & 0.00 & -0.50 & 0.50\\
 \bottomrule
 \end{tabular}}
 \end{center}
 
-Figure~\ref{fig:success-fidelity} compares the success probability with the
-target-state fidelity.  The success probability remains equal to one over the
-entire interval, while the fidelity decreases linearly as the phase-flip
-probability increases.
+Figure~\ref{fig:success-fidelity} compares the computational-basis success,
+X-basis correlated success, and target-state fidelity. The computational-basis
+success remains equal to one over the entire interval, while the X-basis
+diagnostic and fidelity decrease linearly as the phase-flip probability increases.
 
 \begin{center}
 \centering
 \includegraphics[width=\columnwidth]{success_vs_fidelity.png}
-\captionof{figure}{Computational-basis success remains perfect while fidelity
-decreases from one to zero; therefore, the accepted outcomes do not certify
-the intended Bell state.}
+\captionof{figure}{Computational-basis success remains perfect, whereas the
+X-basis diagnostic and fidelity decrease from one to zero; the latter two
+measurements expose the phase error hidden by accepted computational outcomes.}
 \label{fig:success-fidelity}
 \end{center}
 
@@ -232,7 +243,7 @@ At $p=0.5$, Eq.~\eqref{eq:rho-p} becomes
 \begin{equation}
 \rho(0.5)=\frac12\ket{00}\!\bra{00}+\frac12\ket{11}\!\bra{11}.
 \end{equation}
-The off-diagonal coherence has vanished, but $S(0.5)=1$.  At $p=1$, the
+The off-diagonal coherence has vanished, but $S(0.5)=1$ whereas $S_X(0.5)=0.5$. At $p=1$, the
 state becomes $\ket{\Phi^-}\!\bra{\Phi^-}$.  It is fully coherent but
 orthogonal to the target, so $F(1)=0$ while $S(1)=1$.
 
@@ -258,7 +269,7 @@ phase-flip probability, including the incoherent state at $p=0.5$ and the
 orthogonal Bell state $\ket{\Phi^-}$ at $p=1$.  In contrast, fidelity and the
 signed coherence element detected the change in the quantum state.  Therefore,
 a benchmark intended to verify Bell-state preparation must include
-phase-sensitive information rather than relying only on accepted
+phase-sensitive information such as the X-basis diagnostic rather than relying only on accepted
 computational-basis outcomes.
 
 \section*{Discussion}
