@@ -63,3 +63,27 @@ At `p = 1`, the output is `|Phi-><Phi-|`.  Its populations remain `1/2` on
 making it orthogonal to `|Phi+>` and hence `F_{Phi+}(1) = 0`.  Thus the
 computational-basis metric accepts the same outcomes but does not test the
 relative phase.
+
+## Task 2: Physical-invariant sweep
+
+The channel is tested over the dense grid `p = 0.00, 0.01, ..., 1.00`.
+For every output, the test verifies a `(4, 4)` `complex128` matrix, unit
+trace, Hermiticity, and positive semidefiniteness.  The expected nonzero
+eigenvalues are `1-p` and `p`, so the smallest exact eigenvalue is zero at
+the endpoints.  The positivity assertion permits only `-1e-12`, which is a
+rounding allowance near this mathematical boundary, not a tolerance large
+enough to conceal a physical violation.  The same `1e-12` absolute tolerance
+is used for matrix equalities; the inputs use decimal fractions represented
+in binary floating point and the operations contain square roots and matrix
+products.
+
+The sweep also verifies Kraus completeness at every grid point, bounds all
+reported probabilities in `[0, 1]`, bounds coherence magnitude in `[0, 1/2]`,
+and verifies the symmetry
+
+\[
+|\rho_{00,11}(p)|=|\rho_{00,11}(1-p)|.
+\]
+
+Inputs below zero and above one are rejected with `ValueError`; `NaN` is also
+rejected because it does not define a physical channel probability.
