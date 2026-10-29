@@ -24,6 +24,11 @@ Z_ON_FIRST = np.kron(Z, IDENTITY_2)
 PHI_PLUS = np.array([1, 0, 0, 1], dtype=COMPLEX) / np.sqrt(2)
 PHI_MINUS = np.array([1, 0, 0, -1], dtype=COMPLEX) / np.sqrt(2)
 RHO_PHI_PLUS = np.outer(PHI_PLUS, PHI_PLUS.conj())
+PLUS_PLUS = np.array([1, 1, 1, 1], dtype=COMPLEX) / 2
+MINUS_MINUS = np.array([1, -1, -1, 1], dtype=COMPLEX) / 2
+X_BASIS_CORRELATED_PROJECTOR = (
+    np.outer(PLUS_PLUS, PLUS_PLUS.conj()) + np.outer(MINUS_MINUS, MINUS_MINUS.conj())
+)
 
 
 def phase_flip_kraus(probability: float) -> tuple[np.ndarray, np.ndarray]:
@@ -46,6 +51,11 @@ def basis_success_probability(rho: np.ndarray) -> float:
     return float(np.real(rho[0, 0] + rho[3, 3]))
 
 
+def x_basis_correlated_success_probability(rho: np.ndarray) -> float:
+    """Return P(++) + P(--) from the X-basis correlated-success projector."""
+    return float(np.real(np.trace(X_BASIS_CORRELATED_PROJECTOR @ rho)))
+
+
 def fidelity_to_phi_plus(rho: np.ndarray) -> float:
     """Return <Phi+|rho|Phi+>, valid because the reference state is pure."""
     return float(np.real(PHI_PLUS.conj() @ rho @ PHI_PLUS))
@@ -58,6 +68,7 @@ def metrics(probability: float) -> dict[str, float]:
     return {
         "p": probability,
         "success_probability": basis_success_probability(rho),
+        "x_basis_success_probability": x_basis_correlated_success_probability(rho),
         "fidelity": fidelity_to_phi_plus(rho),
         "coherence_real": float(np.real(coherence)),
         "coherence_magnitude": float(np.abs(coherence)),

@@ -87,3 +87,33 @@ and verifies the symmetry
 
 Inputs below zero and above one are rejected with `ValueError`; `NaN` is also
 rejected because it does not define a physical channel probability.
+
+## Task 3: X-basis correlated-success diagnostic
+
+Define the one-qubit X-basis states as
+`|+> = (|0> + |1>)/sqrt(2)` and `|-> = (|0> - |1>)/sqrt(2)`.  The
+correlated-success projector is
+
+\[
+\Pi_X = |++\rangle\langle++| + |--\rangle\langle--|
+= \frac12\begin{pmatrix}
+1&0&0&1\\
+0&1&1&0\\
+0&1&1&0\\
+1&0&0&1
+\end{pmatrix}.
+\]
+
+The diagnostic is calculated from the projector, not from its analytic
+formula:
+
+\[
+S_X(p) = \operatorname{Tr}(\Pi_X\rho(p))
+= \frac12\left(\rho_{00,00}+\rho_{11,11}
++\rho_{00,11}+\rho_{11,00}\right) = 1-p.
+\]
+
+The code constructs `Pi_X` by outer products of the `|++>` and `|-->`
+vectors, then evaluates `Tr(Pi_X rho)`.  Endpoint and dense-grid tests compare
+that matrix computation to `1-p`; they also establish the contrast
+`S_Z(p)=1` and `S_X(p)=1-p`.

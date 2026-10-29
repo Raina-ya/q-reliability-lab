@@ -33,6 +33,7 @@ def test_metrics_match_hand_derived_phase_flip_relations(probability):
         {
             "p": probability,
             "success_probability": 1.0,
+            "x_basis_success_probability": 1.0 - probability,
             "fidelity": 1.0 - probability,
             "coherence_real": expected_coherence,
             "coherence_magnitude": abs(expected_coherence),
