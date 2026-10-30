@@ -49,8 +49,13 @@ jobs:
           python -m src.finite_shot_figures
           --input experiments/finite_shot_sweep.csv
           --output .ci-artifacts/finite_shot_detectability.png
+      - name: Regenerate channel-metric matrix
+        run: >
+          python -m src.channel_metric_matrix
+          --output experiments/channel_metric_matrix.csv
+          --figure .ci-artifacts/channel_metric_sensitivity_matrix.png
       - name: Verify deterministic data artifacts are committed
-        run: git diff --exit-code -- experiments/phase_error_sweep.csv experiments/finite_shot_sweep.csv paper/generated/phase_error_results_table.tex
+        run: git diff --exit-code -- experiments/phase_error_sweep.csv experiments/finite_shot_sweep.csv experiments/channel_metric_matrix.csv paper/generated/phase_error_results_table.tex
 
   compile-paper:
     runs-on: ubuntu-latest

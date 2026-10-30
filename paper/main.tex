@@ -207,6 +207,14 @@ accompanied by a two-sided 95\% Wilson score confidence interval.  The Wilson
 interval remains finite and bounded at zero or all observed successes; it is a
 frequentist confidence interval, not a posterior probability.
 
+\subsection*{Channel--metric sensitivity matrix}
+The same first-qubit location was also evaluated for bit flips, phase flips,
+and a single-qubit depolarizing channel.  The depolarizing implementation uses
+Pauli weights $1-3p/4,p/4,p/4,p/4$ for $I,X,Y,Z$, respectively, so its
+maximally mixed endpoint has target-fidelity floor $F(1)=1/4$.  The generated
+matrix records each metric's maximum absolute change over $p\in[0,1]$; zero
+means the metric is structurally blind within this specified model.
+
 \section*{Experiment Setup}
 The calculation was implemented in Python using NumPy.  The phase-flip
 probability was swept over
@@ -231,6 +239,8 @@ The implementation was checked with parameterized pytest tests. These tests
 verify the analytic density matrix and metric relations, Kraus completeness,
 unit trace, Hermiticity, positive semidefiniteness, invalid input rejection,
 X-basis projector evaluation, and deterministic CSV regeneration.
+The channel comparison additionally checks Kraus completeness, physical output
+states, analytic limits, structural blindness, and matrix regeneration.
 
 \section*{Results}
 Representative numerical values from the 101-point sweep are shown in
@@ -299,6 +309,20 @@ empirical mean tracks the phase-sensitive analytic prediction.}
 \label{fig:finite-shot}
 \end{center}
 
+Figure~\ref{fig:channel-matrix} shows that no alternative metric is universally
+sufficient. Z-basis success is blind to phase flips, X-basis success is blind
+to bit flips, and every listed metric changes under the stated depolarizing
+model.
+
+\begin{center}
+\centering
+\includegraphics[width=\columnwidth]{channel_metric_sensitivity_matrix.png}
+\captionof{figure}{No single listed metric detects all three simulated noise
+types: metric choice encodes which errors a benchmark can see. Cells report
+maximum absolute change over the specified noise-strength sweep.}
+\label{fig:channel-matrix}
+\end{center}
+
 \section*{Conclusion}
 This reproducible simulation re-demonstrated, for one Bell state and one
 phase-flip channel, that computational-basis success probability alone can
@@ -330,13 +354,14 @@ The independent-shot assumption, fixed seed, and Wilson confidence intervals
 make the simulation reproducible; they do not turn the intervals into posterior
 probabilities or make them evidence about a physical device.
 
-The compared metrics also have different limitations.  Fidelity determines
+The channel matrix confirms that the compared metrics have different
+limitations. Fidelity determines
 whether the state agrees with one specified target, but it is not a complete
 characterization of a general quantum process.  Coherence magnitude detects
 the loss and recovery of coherence but removes its sign, so it cannot
-distinguish $\ket{\Phi^+}$ from $\ket{\Phi^-}$.  A future experiment may
-compare phase-flip, bit-flip, and depolarizing channels, then evaluate the same
-metrics using a noise model tied to a specified circuit location.  Hardware measurements
+distinguish $\ket{\Phi^+}$ from $\ket{\Phi^-}$. The present comparison remains
+limited to three Pauli channels applied at one circuit location. A future
+experiment may use a noise model tied to a specified circuit location. Hardware measurements
 would require separate calibration data and should not be interpreted using
 the present simplified model alone.
 

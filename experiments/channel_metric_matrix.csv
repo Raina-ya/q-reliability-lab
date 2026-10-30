@@ -1,0 +1,16 @@
+channel,metric,value_at_p0,value_at_p1,maximum_absolute_change,structurally_blind
+bit_flip,z_basis_success_probability,1.0000000000,0.0000000000,1.0000000000,false
+bit_flip,x_basis_success_probability,1.0000000000,1.0000000000,0.0000000000,true
+bit_flip,fidelity,1.0000000000,0.0000000000,1.0000000000,false
+bit_flip,coherence_real,0.5000000000,0.0000000000,0.5000000000,false
+bit_flip,coherence_magnitude,0.5000000000,0.0000000000,0.5000000000,false
+phase_flip,z_basis_success_probability,1.0000000000,1.0000000000,0.0000000000,true
+phase_flip,x_basis_success_probability,1.0000000000,0.0000000000,1.0000000000,false
+phase_flip,fidelity,1.0000000000,0.0000000000,1.0000000000,false
+phase_flip,coherence_real,0.5000000000,-0.5000000000,1.0000000000,false
+phase_flip,coherence_magnitude,0.5000000000,0.5000000000,0.5000000000,false
+depolarizing,z_basis_success_probability,1.0000000000,0.5000000000,0.5000000000,false
+depolarizing,x_basis_success_probability,1.0000000000,0.5000000000,0.5000000000,false
+depolarizing,fidelity,1.0000000000,0.2500000000,0.7500000000,false
+depolarizing,coherence_real,0.5000000000,0.0000000000,0.5000000000,false
+depolarizing,coherence_magnitude,0.5000000000,0.0000000000,0.5000000000,false
