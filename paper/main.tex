@@ -27,8 +27,9 @@
 \maketitle
 
 \begin{abstract}
-In this study, we investigated whether computational-basis success probability
-alone can correctly evaluate a phase-corrupted Bell-state circuit.  The ideal
+This reproducible simulation study quantitatively demonstrates a known
+measurement-basis limitation: computational-basis success probability alone
+cannot evaluate a phase-corrupted Bell-state circuit.  The ideal
 state $\ket{\Phi^+}=(\ket{00}+\ket{11})/\sqrt{2}$ was subjected to a phase-flip
 channel on the first qubit, and the error probability was swept from $p=0$ to
 $p=1$ in steps of $0.01$.  The computational-basis and X-basis correlated
@@ -64,8 +65,12 @@ identical.  State fidelity and density-matrix elements contain information
 that is not present in the selected success probability
 \cite{nielsenchuang2010}.  In this work, a phase-flip channel represented by
 Kraus operators was used to isolate this difference
-\cite{wood2015tensor}.  The purpose was to determine whether a circuit can be
-judged as successful after the intended Bell state has been changed.
+\cite{wood2015tensor}.  The contribution is not a new noise model or a
+hardware benchmark.  It is a small, inspectable benchmark that makes the
+metric choice, exact density-matrix prediction, finite-shot sampling design,
+and uncertainty visible together.  The purpose was to determine whether a
+circuit can be judged as successful after the intended Bell state has been
+changed.
 
 \section*{Methodology}
 \subsection*{Bell-state preparation}
@@ -295,13 +300,14 @@ empirical mean tracks the phase-sensitive analytic prediction.}
 \end{center}
 
 \section*{Conclusion}
-This experiment demonstrated that computational-basis success probability
-alone can incorrectly judge a phase-corrupted Bell-state circuit as perfectly
-successful.  The value of $P(00)+P(11)$ remained equal to one for every
+This reproducible simulation re-demonstrated, for one Bell state and one
+phase-flip channel, that computational-basis success probability alone can
+incorrectly judge a phase-corrupted Bell-state circuit as perfectly successful.
+The value of $P(00)+P(11)$ remained equal to one for every
 phase-flip probability, including the incoherent state at $p=0.5$ and the
 orthogonal Bell state $\ket{\Phi^-}$ at $p=1$.  In contrast, fidelity and the
 signed coherence element detected the change in the quantum state.  Therefore,
-a benchmark intended to verify Bell-state preparation must include
+a benchmark intended to verify Bell-state preparation in this noise model must include
 phase-sensitive information such as the X-basis diagnostic rather than relying only on accepted
 computational-basis outcomes.  Finite-shot sampling changes the precision of
 the X-basis estimate, but it cannot make the Z-basis metric sensitive to a
