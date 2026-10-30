@@ -13,3 +13,9 @@ paper/*.fdb_latexmk
 paper/*.fls
 paper/*.log
 paper/*.out
+slides/*.aux
+slides/*.log
+slides/*.nav
+slides/*.out
+slides/*.snm
+slides/*.toc
