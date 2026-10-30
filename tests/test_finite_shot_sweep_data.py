@@ -48,6 +48,10 @@ def test_committed_finite_shot_csv_is_byte_reproducible_from_the_preregistered_s
         assert rebuilt_path.read_bytes() == CSV_PATH.read_bytes()
 
 
+def test_finite_shot_csv_uses_lf_line_endings_for_cross_platform_reproducibility():
+    assert b"\r\n" not in CSV_PATH.read_bytes()
+
+
 def test_aggregate_finite_shot_estimates_converge_to_the_analytic_expectation():
     grouped_estimates: dict[tuple[float, int, str], list[float]] = defaultdict(list)
     for row in read_rows(CSV_PATH):

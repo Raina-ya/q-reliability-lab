@@ -158,7 +158,9 @@ def write_finite_shot_csv(rows: list[dict[str, float | int | str]], output: Path
     """Write the finite-shot sweep with a stable schema and numeric precision."""
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("w", newline="", encoding="utf-8") as stream:
-        writer = csv.DictWriter(stream, fieldnames=FINITE_SHOT_FIELDNAMES)
+        writer = csv.DictWriter(
+            stream, fieldnames=FINITE_SHOT_FIELDNAMES, lineterminator="\n"
+        )
         writer.writeheader()
         for row in rows:
             writer.writerow(
