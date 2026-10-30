@@ -8,6 +8,20 @@ permissions:
   contents: read
 
 jobs:
+  ruff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Ruff
+        run: python -m pip install ruff==0.9.10
+      - name: Lint
+        run: ruff check --output-format=github src tests
+      - name: Check formatting
+        run: ruff format --check src tests
+
   test-and-regenerate:
     runs-on: ubuntu-latest
     steps:
