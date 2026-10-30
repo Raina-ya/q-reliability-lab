@@ -11,9 +11,7 @@ import numpy as np
 from src.phase_error_blind_spot import (
     IDENTITY_2,
     IDENTITY_4,
-    PHI_PLUS,
     RHO_PHI_PLUS,
-    X_BASIS_CORRELATED_PROJECTOR,
     Z,
     basis_success_probability,
     fidelity_to_phi_plus,
