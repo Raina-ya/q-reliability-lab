@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Q-Reliability Lab: hidden phase error</title>
+    <style>
+      :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+      body { max-width: 780px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+      .panel { border: 1px solid #7f8c8d; border-radius: 10px; padding: 1rem; margin: 1rem 0; }
+      #probability { width: 100%; }
+      .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; }
+      .metric { background: color-mix(in srgb, Canvas 90%, #2374ab 10%); border-radius: 6px; padding: .75rem; }
+      #density-matrix { display: grid; grid-template-columns: repeat(4, 1fr); gap: .3rem; max-width: 360px; }
+      #density-matrix span { font-family: ui-monospace, monospace; text-align: center; padding: .3rem; background: color-mix(in srgb, Canvas 88%, #2374ab 12%); }
+      .warning { border-left: 4px solid #d97706; padding-left: .75rem; }
+      @media (max-width: 550px) { .metrics { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <h1>When a perfect score hides a phase error</h1>
+    <p>Exact classical model of <code>|Phi+></code> under a phase flip on the first qubit. This is an interactive visualization of the repository's simulation, not quantum-hardware data.</p>
+    <section class="panel">
+      <label for="probability">Phase-flip probability <strong id="probability-label">0.000</strong></label>
+      <input id="probability" type="range" min="0" max="1" step="0.01" value="0">
+      <p>Choose the correlated-success measurement:</p>
+      <label><input type="radio" name="basis" value="Z" checked> Z basis: accept 00 or 11</label>
+      <label><input type="radio" name="basis" value="X"> X basis: accept ++ or --</label>
+    </section>
+    <section class="panel metrics">
+      <div class="metric"><strong id="selected-success"></strong></div>
+      <div class="metric">Fidelity to |Phi+>: <strong id="fidelity"></strong></div>
+      <div class="metric">Re(rho[00,11]): <strong id="coherence"></strong></div>
+    </section>
+    <section class="panel">
+      <h2>Density matrix in computational-basis order (00, 01, 10, 11)</h2>
+      <div id="density-matrix" aria-label="density matrix"></div>
+    </section>
+    <p class="warning">At p = 1, the Z-basis success is still 1.000, yet fidelity is 0.000: the state is |Phi->, which has identical Z-basis populations but the opposite relative phase.</p>
+    <p><a href="https://github.com/Raina-ya/q-reliability-lab">Source, derivations, data, and tests</a></p>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

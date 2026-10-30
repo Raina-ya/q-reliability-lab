@@ -43,6 +43,10 @@ the computational-basis metric $S(p)$ remains one.
 
 The complete derivation, numerical table, limitations, and references are in the [report](paper/main.pdf). The [research log](notes/2026-10-22-metric-blind-spot.md) preserves the hypothesis written before the sweep and records the result afterward.
 
+Try the [interactive visual lab](https://raina-ya.github.io/q-reliability-lab/)
+to drag the phase-flip probability, switch between Z and X correlated-success
+measurements, and inspect the exact density matrix used by the Python model.
+
 ## Repository contents
 
 - `paper/main.tex` and `paper/references.bib`: Overleaf-compatible report source.
@@ -56,6 +60,11 @@ The complete derivation, numerical table, limitations, and references are in the
 - `experiments/finite_shot_sweep.csv`: pre-registered 3,000-row finite-shot sweep.
 - `paper/figures/finite_shot_detectability.png`: finite-shot precision compared
   with the structural Z-basis blind spot.
+- `src/channel_metric_matrix.py`, `experiments/channel_metric_matrix.csv`, and
+  `paper/figures/channel_metric_sensitivity_matrix.png`: a three-channel,
+  five-metric sensitivity comparison.
+- `docs/index.html`: dependency-free GitHub Pages visual lab, verified against
+  the Python phase-flip model on a fixed probability grid.
 - `notes/`: research question, pre-execution hypothesis, result, and interpretation boundary.
 
 ## Reproduce the experiment
