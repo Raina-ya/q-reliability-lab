@@ -29,6 +29,7 @@ MINUS_MINUS = np.array([1, -1, -1, 1], dtype=COMPLEX) / 2
 X_BASIS_CORRELATED_PROJECTOR = (
     np.outer(PLUS_PLUS, PLUS_PLUS.conj()) + np.outer(MINUS_MINUS, MINUS_MINUS.conj())
 )
+RESULTS_TABLE_PROBABILITIES = (0.0, 0.25, 0.5, 0.75, 1.0)
 
 
 def phase_flip_kraus(probability: float) -> tuple[np.ndarray, np.ndarray]:
@@ -90,8 +91,41 @@ def write_csv(rows: list[dict[str, float]], output: Path) -> None:
             writer.writerow({key: f"{value:.10f}" for key, value in row.items()})
 
 
+def write_results_table_from_csv(csv_path: Path, output: Path) -> None:
+    """Write the paper's representative-results table from the sweep CSV."""
+    with csv_path.open(newline="", encoding="utf-8") as stream:
+        rows_by_probability = {row["p"]: row for row in csv.DictReader(stream)}
+
+    lines = [
+        r"\begin{tabular}{@{}cccccc@{}}",
+        r"\toprule",
+        r"$p$ & $S_Z(p)$ & $S_X(p)$ & $F(p)$ & $\mathrm{Re}(\rho_{00,11})$ & $|\rho_{00,11}|$\\",
+        r"\midrule",
+    ]
+    for probability in RESULTS_TABLE_PROBABILITIES:
+        row = rows_by_probability[f"{probability:.10f}"]
+        lines.append(
+            " & ".join(
+                f"{float(row[fieldname]):.2f}"
+                for fieldname in (
+                    "p",
+                    "success_probability",
+                    "x_basis_success_probability",
+                    "fidelity",
+                    "coherence_real",
+                    "coherence_magnitude",
+                )
+            )
+            + r"\\"
+        )
+    lines.extend([r"\bottomrule", r"\end{tabular}"])
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def write_figures(rows: list[dict[str, float]], directory: Path) -> None:
-    """Render figures with Matplotlib, with a Pillow fallback for offline QA.
+    """Render the metric figures with Matplotlib, with a Pillow fallback for offline QA.
 
     Matplotlib is the declared project dependency and normal rendering path.
     The fallback keeps the experiment reproducible in restricted build
@@ -108,6 +142,28 @@ def write_figures(rows: list[dict[str, float]], directory: Path) -> None:
     except ImportError:
         _write_figures_with_pillow(rows, directory)
         return
+
+    plt.figure(figsize=(7.2, 4.4))
+    plt.plot(
+        p,
+        [row["success_probability"] for row in rows],
+        label=r"$S_Z=P(00)+P(11)$",
+        linewidth=2.4,
+    )
+    plt.plot(
+        p,
+        [row["x_basis_success_probability"] for row in rows],
+        label=r"$S_X=P(++)+P(--)$",
+        linewidth=2.4,
+    )
+    plt.xlabel("Phase-flip probability p")
+    plt.ylabel("Correlated-success probability")
+    plt.ylim(-0.04, 1.04)
+    plt.grid(alpha=0.25)
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(directory / "basis_success_comparison.png", dpi=180)
+    plt.close()
 
     plt.figure(figsize=(7.2, 4.4))
     plt.plot(p, [row["success_probability"] for row in rows], label=r"$P(00)+P(11)$", linewidth=2.4)
@@ -183,6 +239,17 @@ def _write_figures_with_pillow(rows: list[dict[str, float]], directory: Path) ->
         image.save(directory / filename)
 
     render(
+        "basis_success_comparison.png",
+        "Z-basis success is blind to the phase error",
+        "Correlated-success probability",
+        [
+            ("S_Z = P(00) + P(11)", [row["success_probability"] for row in rows]),
+            ("S_X = P(++) + P(--)", [row["x_basis_success_probability"] for row in rows]),
+        ],
+        0.0,
+        1.0,
+    )
+    render(
         "success_vs_fidelity.png",
         "Task success is blind to the phase error",
         "Metric value",
@@ -211,12 +278,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=Path("experiments/phase_error_sweep.csv"))
     parser.add_argument("--figures", type=Path, default=Path("paper/figures"))
+    parser.add_argument("--table", type=Path, default=Path("paper/generated/phase_error_results_table.tex"))
     args = parser.parse_args()
 
     rows = sweep()
     write_csv(rows, args.output)
     write_figures(rows, args.figures)
-    print(f"Wrote {len(rows)} rows to {args.output} and two figures to {args.figures}")
+    write_results_table_from_csv(args.output, args.table)
+    print(f"Wrote {len(rows)} rows to {args.output}, three figures to {args.figures}, and a table to {args.table}")
 
 
 if __name__ == "__main__":

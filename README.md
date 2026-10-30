@@ -1,5 +1,7 @@
 # Q-Reliability Lab
 
+[![CI](https://github.com/Raina-ya/q-reliability-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/Raina-ya/q-reliability-lab/actions/workflows/ci.yml)
+
 Can a Bell-state circuit receive a perfect score after a phase error has changed the state?
 
 This repository studies one narrow reliability problem. A phase-flip channel is applied to the first qubit of
@@ -61,10 +63,46 @@ py -3 -m venv .venv
 .\.venv\Scripts\python.exe -m pytest
 .\.venv\Scripts\python.exe -m src.phase_error_blind_spot `
   --output experiments/phase_error_sweep.csv `
-  --figures paper/figures
+  --figures paper/figures `
+  --table paper/generated/phase_error_results_table.tex
 ```
 
-The final command deterministically regenerates the CSV and both figures. No Monte Carlo sampling is used.
+The final command deterministically regenerates the CSV, the three figures,
+and the paper's representative-results table. No Monte Carlo sampling is used
+in this phase-error sweep. GitHub Actions repeats the test suite, artifact
+generation, and paper compilation in a clean environment.
+
+## Finite-shot sampling
+
+Finite-shot estimates are explicitly labeled as observed and are separate from
+the analytic probabilities:
+
+```python
+from src.finite_shot_phase_error import sample_success_counts
+
+result = sample_success_counts(probability=0.3, basis="X", shots=1_000, seed=20261030)
+print(result.observed_success_probability, result.analytic_success_probability)
+```
+
+For this model, Z-basis correlated success is always one, whereas X-basis
+correlated success has analytic probability `1 - p` and is sampled with the
+given seed.
+
+Regenerate the pre-registered 3,000-row finite-shot sweep with:
+
+```powershell
+.\.venv\Scripts\python.exe -m src.finite_shot_phase_error `
+  --output experiments/finite_shot_sweep.csv `
+  --root-seed 20261030
+```
+
+Generate the finite-shot detectability figure from that CSV with:
+
+```powershell
+.\.venv\Scripts\python.exe -m src.finite_shot_figures `
+  --input experiments/finite_shot_sweep.csv `
+  --output paper/figures/finite_shot_detectability.png
+```
 
 ## Compile the report
 

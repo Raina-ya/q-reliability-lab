@@ -37,8 +37,11 @@ element $\rho_{00,11}$ were compared.  The success probability remained equal
 to one for all 101 simulated values, while the fidelity decreased from one to
 zero and $\operatorname{Re}(\rho_{00,11})$ changed from $0.5$ to $-0.5$.  At
 $p=0.5$, the coherence vanished even though the selected success metric still
-reported a perfect result.  Therefore, computational-basis success probability
-alone cannot certify the relative phase of the prepared Bell state.
+reported a perfect result.  A pre-registered finite-shot simulation then
+showed that more Z-basis samples do not repair this structural blind spot,
+whereas X-basis sampling uncertainty shrinks with shot count.  Therefore,
+computational-basis success probability alone cannot certify the relative
+phase of the prepared Bell state.
 \end{abstract}
 
 \begin{multicols}{2}
@@ -183,6 +186,22 @@ magnitude:
 The signed value distinguishes a positive from a negative relative phase,
 whereas the magnitude only indicates the amount of coherence.
 
+\subsection*{Finite-shot measurements and uncertainty}
+For $N$ independent measurements, let $K_B$ be the correlated-success count
+in basis $B\in\{Z,X\}$ and let $\widehat{S}_B=K_B/N$.  The Z-basis model has
+$K_Z=N$ for every $p$: its accepted outcomes are always $00$ or $11$.
+In contrast,
+\begin{equation}
+K_X\sim\operatorname{Binomial}(N,1-p), \qquad
+\mathbb{E}[\widehat{S}_X]=1-p. \label{eq:finite-shot-x}
+\end{equation}
+Thus, Z-basis samples have the same correlated-success distribution at every
+phase-flip probability and cannot identify $p$, whereas the X-basis estimator
+contains phase-error information.  Each observed binomial proportion was
+accompanied by a two-sided 95\% Wilson score confidence interval.  The Wilson
+interval remains finite and bounded at zero or all observed successes; it is a
+frequentist confidence interval, not a posterior probability.
+
 \section*{Experiment Setup}
 The calculation was implemented in Python using NumPy.  The phase-flip
 probability was swept over
@@ -193,8 +212,15 @@ giving 101 deterministic density-matrix evaluations.  For each value of $p$,
 the program applied the Kraus map and recorded $S(p)$, $S_X(p)$, $F(p)$,
 $\operatorname{Re}(\rho_{00,11})$, and $|\rho_{00,11}|$.  Matplotlib was used
 to generate the figures, and the complete numerical sweep was stored in CSV
-format.  No random sampling, finite-shot measurement, or quantum software
-development kit was used.
+format.  No random sampling or quantum software development kit was used for
+this exact density-matrix sweep.
+
+The separate finite-shot experiment was pre-registered before its samples
+were generated.  It used $p\in\{0,0.25,0.50,0.75,1\}$, shot budgets
+$N\in\{100,1000,10000\}$, both bases, and 100 repetitions per condition.
+The root seed was 20261030, with a recorded deterministic child seed for every
+row, yielding 3,000 rows.  These are simulated binomial measurements from the
+stated model, not quantum-hardware observations.
 
 The implementation was checked with parameterized pytest tests. These tests
 verify the analytic density matrix and metric relations, Kraus completeness,
@@ -212,31 +238,21 @@ Eqs.~\eqref{eq:success}--\eqref{eq:coherence} to the stored precision.
 signed coherence show that the target Bell state has changed.}
 \label{tab:results}
 \resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}cccccc@{}}
-\toprule
-$p$ & $S(p)$ & $S_X(p)$ & $F(p)$ & $\operatorname{Re}(\rho_{00,11})$ & $|\rho_{00,11}|$\\
-\midrule
-0.00 & 1.00 & 1.00 & 1.00 &  0.50 & 0.50\\
-0.25 & 1.00 & 0.75 & 0.75 &  0.25 & 0.25\\
-0.50 & 1.00 & 0.50 & 0.50 &  0.00 & 0.00\\
-0.75 & 1.00 & 0.25 & 0.25 & -0.25 & 0.25\\
-1.00 & 1.00 & 0.00 & 0.00 & -0.50 & 0.50\\
-\bottomrule
-\end{tabular}}
+\input{generated/phase_error_results_table.tex}}
 \end{center}
 
-Figure~\ref{fig:success-fidelity} compares the computational-basis success,
-X-basis correlated success, and target-state fidelity. The computational-basis
-success remains equal to one over the entire interval, while the X-basis
-diagnostic and fidelity decrease linearly as the phase-flip probability increases.
+Figure~\ref{fig:basis-success} directly compares the two correlated-success
+metrics. The computational-basis success remains equal to one over the entire
+interval, while the X-basis diagnostic decreases linearly as the phase-flip
+probability increases.
 
 \begin{center}
 \centering
-\includegraphics[width=\columnwidth]{success_vs_fidelity.png}
-\captionof{figure}{Computational-basis success remains perfect, whereas the
-X-basis diagnostic and fidelity decrease from one to zero; the latter two
-measurements expose the phase error hidden by accepted computational outcomes.}
-\label{fig:success-fidelity}
+\includegraphics[width=\columnwidth]{basis_success_comparison.png}
+\captionof{figure}{Computational-basis success is insensitive to phase flips,
+whereas the X-basis correlated-success diagnostic decreases from one to zero
+and exposes the degradation.}
+\label{fig:basis-success}
 \end{center}
 
 At $p=0.5$, Eq.~\eqref{eq:rho-p} becomes
@@ -261,6 +277,23 @@ $\ket{\Phi^-}$.}
 \label{fig:coherence}
 \end{center}
 
+Figure~\ref{fig:finite-shot} separates finite precision from metric
+blindness.  At $p=0.5$, every Z-basis sample has correlated-success estimate
+one regardless of shot budget, while the X-basis estimate is close to its
+analytic value of $0.5$ and its Wilson interval narrows with additional shots.
+Across phase-flip probabilities, the X-basis empirical means track the
+analytic curve while the Z-basis empirical means remain one.
+
+\begin{center}
+\centering
+\includegraphics[width=\columnwidth]{finite_shot_detectability.png}
+\captionof{figure}{More shots do not repair the structural Z-basis blind spot:
+Z-basis correlated success remains one at $p=0.5$ in every finite sample.
+Only X-basis sampling uncertainty shrinks with additional shots, and its
+empirical mean tracks the phase-sensitive analytic prediction.}
+\label{fig:finite-shot}
+\end{center}
+
 \section*{Conclusion}
 This experiment demonstrated that computational-basis success probability
 alone can incorrectly judge a phase-corrupted Bell-state circuit as perfectly
@@ -270,27 +303,34 @@ orthogonal Bell state $\ket{\Phi^-}$ at $p=1$.  In contrast, fidelity and the
 signed coherence element detected the change in the quantum state.  Therefore,
 a benchmark intended to verify Bell-state preparation must include
 phase-sensitive information such as the X-basis diagnostic rather than relying only on accepted
-computational-basis outcomes.
+computational-basis outcomes.  Finite-shot sampling changes the precision of
+the X-basis estimate, but it cannot make the Z-basis metric sensitive to a
+relative phase that its accepted outcomes never test.
 
 \section*{Discussion}
 The present work is an analytic density-matrix calculation reproduced by a
 deterministic classical simulation.  It does not contain data from quantum
 hardware.  The phase-flip channel is a simplified noise model and does not
 include state-preparation-and-measurement (SPAM) error, crosstalk, coherent
-calibration error, finite-shot uncertainty, or drift.  In addition, the noise
+calibration error, or drift.  In addition, the noise
 channel was applied after an ideal Bell-state circuit and was not assigned to
 a specific pulse or time location inside a physical CNOT implementation.
 Consequently, the results do not estimate the CNOT error rate of IBM hardware
 or of any other real device.
 
+The finite-shot extension adds binomial sampling uncertainty to the stated
+analytic probabilities, but it still omits hardware measurement mechanisms.
+The independent-shot assumption, fixed seed, and Wilson confidence intervals
+make the simulation reproducible; they do not turn the intervals into posterior
+probabilities or make them evidence about a physical device.
+
 The compared metrics also have different limitations.  Fidelity determines
 whether the state agrees with one specified target, but it is not a complete
 characterization of a general quantum process.  Coherence magnitude detects
 the loss and recovery of coherence but removes its sign, so it cannot
-distinguish $\ket{\Phi^+}$ from $\ket{\Phi^-}$.  A future experiment may add
-finite-shot sampling and measurements in the $X$ basis, compare phase-flip,
-bit-flip, and depolarizing channels, and then evaluate the same metrics using a
-noise model tied to a specified circuit location.  Hardware measurements
+distinguish $\ket{\Phi^+}$ from $\ket{\Phi^-}$.  A future experiment may
+compare phase-flip, bit-flip, and depolarizing channels, then evaluate the same
+metrics using a noise model tied to a specified circuit location.  Hardware measurements
 would require separate calibration data and should not be interpreted using
 the present simplified model alone.
 
