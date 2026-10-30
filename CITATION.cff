@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using this metadata."
+title: "Q-Reliability Lab"
+type: software
+authors:
+  - family-names: Liu
+    given-names: Zhen-Jun
+version: 0.1.0
+date-released: 2026-10-30
+license: MIT
+abstract: >-
+  A reproducible density-matrix and finite-shot simulation study showing how
+  computational-basis correlated success can be blind to phase-flip errors in
+  a Bell-state benchmark.
+keywords:
+  - quantum computing
+  - quantum reliability
+  - phase flip
+  - reproducibility
+repository-code: "https://github.com/Raina-ya/q-reliability-lab"
+url: "https://github.com/Raina-ya/q-reliability-lab"
