@@ -21,15 +21,17 @@
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.12}
 
-\usepackage{amsmath,amssymb,booktabs,braket,graphicx,siunitx}
+\usepackage{amsmath,amssymb,booktabs,braket,graphicx,siunitx,tikz}
 \usepackage[font=small,labelfont=bf]{caption}
+\usetikzlibrary{arrows.meta,positioning}
 \graphicspath{{../paper/figures/}}
 \definecolor{quantumblue}{RGB}{25,73,118}
 \definecolor{quantumred}{RGB}{148,40,47}
 \setbeamercolor{structure}{fg=quantumblue}
 \setbeamercolor{frametitle}{fg=quantumblue}
 \setbeamercolor{title}{fg=quantumblue}
-\newcommand{\sourcefoot}[1]{\vfill\tiny\color{gray}Source: #1}
+% Source provenance remains in slides/README.md; omit per-slide source footers.
+\newcommand{\sourcefoot}[1]{}
 
 \title[Q-Reliability Lab]{Q-Reliability Lab}
 \subtitle{Computational-basis success can remain perfect while phase-flip noise destroys the target Bell-state relation}
@@ -127,6 +129,37 @@ $(Z\otimes I)\ket{\Phi^+}=\ket{\Phi^-}$, so the channel mixes two orthogonal Bel
 \sourcefoot{Kraus construction and completeness: \texttt{src/phase\_error\_blind\_spot.py}.}
 \end{frame}
 
+\begin{frame}[t]{What a phase flip changes --- and what it leaves untouched}
+\centering
+\begin{tikzpicture}[
+  stage/.style={draw=quantumblue, very thick, rounded corners=3pt, align=center,
+    minimum width=31mm, minimum height=19mm, fill=quantumblue!6},
+  metric/.style={draw=black!65, rounded corners=3pt, align=center,
+    minimum width=39mm, minimum height=15mm, fill=black!3},
+  arrow/.style={-{Latex[length=2.2mm]}, very thick, quantumblue}
+]
+  \node[stage] (target) {Ideal target\\[1mm]
+    $\ket{\Phi^+}=\left(\ket{00}+\ket{11}\right)/\sqrt2$};
+  \node[stage, right=15mm of target] (channel) {Phase-flip channel\\[1mm]
+    $I$ with $1-p$\\ $Z\otimes I$ with $p$};
+  \node[stage, right=15mm of channel] (output) {Output $\rho(p)$\\[1mm]
+    populations $=1/2,1/2$\\
+    coherence $=(1-2p)/2$};
+  \node[metric, below left=12mm and 18mm of output] (zmetric) {Z-basis correlation\\
+    $S_Z=P(00)+P(11)=1$};
+  \node[metric, below right=12mm and 18mm of output] (xmetric) {X-basis correlation\\
+    $S_X=P(++)+P(--)=1-p$};
+  \draw[arrow] (target) -- (channel);
+  \draw[arrow] (channel) -- (output);
+  \draw[arrow] (output) -- (zmetric);
+  \draw[arrow] (output) -- (xmetric);
+\end{tikzpicture}
+\vspace{3mm}
+\begin{alertblock}{Reading the diagram}
+The phase flip changes the off-diagonal relation, not the accepted Z-basis populations. The two success metrics therefore answer different physical questions.
+\end{alertblock}
+\end{frame}
+
 \begin{frame}[t]{Central question and hypothesis}
 \begin{block}{Question}
 For the stated phase-flip model, which measured quantities remain informative as $p$ changes from zero to one?
@@ -181,6 +214,40 @@ $p=0.5$ removes coherence. $p=1$ reverses its sign and produces a state orthogon
 \end{block}
 \end{columns}
 \sourcefoot{Values from \texttt{experiments/phase\_error\_sweep.csv}; formulas in \texttt{paper/main.tex}.}
+\end{frame}
+
+\begin{frame}[t]{Three exact snapshots: population is unchanged, phase is not}
+\centering
+\begin{tikzpicture}[
+  snapshot/.style={draw=black!60, very thick, rounded corners=3pt, align=center,
+    minimum width=38mm, minimum height=53mm},
+  arrow/.style={-{Latex[length=2.2mm]}, very thick, quantumblue}
+]
+  \node[snapshot, fill=quantumblue!7] (zero) {
+    \textbf{$p=0$}\\[2mm]
+    $\ket{\Phi^+}$\\[2mm]
+    $\rho_{00,00}=\rho_{11,11}=1/2$\\[1mm]
+    {\color{quantumblue}$\mathrm{Re}\,\rho_{00,11}=+1/2$}\\[2mm]
+    $S_Z=1,\quad S_X=1$};
+  \node[snapshot, fill=black!4, right=13mm of zero] (half) {
+    \textbf{$p=0.5$}\\[2mm]
+    incoherent mixture\\[2mm]
+    $\rho_{00,00}=\rho_{11,11}=1/2$\\[1mm]
+    {\color{black!70}$\mathrm{Re}\,\rho_{00,11}=0$}\\[2mm]
+    $S_Z=1,\quad S_X=0.5$};
+  \node[snapshot, fill=quantumred!8, right=13mm of half] (one) {
+    \textbf{$p=1$}\\[2mm]
+    $\ket{\Phi^-}$\\[2mm]
+    $\rho_{00,00}=\rho_{11,11}=1/2$\\[1mm]
+    {\color{quantumred}$\mathrm{Re}\,\rho_{00,11}=-1/2$}\\[2mm]
+    $S_Z=1,\quad S_X=0$};
+  \draw[arrow] (zero) -- node[above,black]{phase randomization} (half);
+  \draw[arrow] (half) -- node[above,black]{phase reversal} (one);
+\end{tikzpicture}
+\vspace{4mm}
+\begin{block}{Why this matters}
+All three states produce the same accepted computational-basis populations. Only a phase-sensitive observable distinguishes the intended Bell relation from a fully reversed one.
+\end{block}
 \end{frame}
 
 \section{Metrics and exact sweep}
